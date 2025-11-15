@@ -22,7 +22,7 @@ for uploaded_file in uploaded_files:
 if st.button("Analyser"):
     st.text("detecter encours")
     predicted, score = predict(str(input_text))
-
+    score = round(score, 4)
     with open('results/result.json', 'w') as file:
         data = {
             "score": score,
@@ -32,6 +32,6 @@ if st.button("Analyser"):
     switch_page('result')
 
 
-st.text("Notrre IA Analyse le contenu pour détecter les signes d'arnaques courantes")
+st.text("Notre IA Analyse le contenu pour détecter les signes d'arnaques courantes")
 st.text("Karnak est un project frugal et ethique creer pour proteger tous les utilisaterus contre les arnaques en ligne. "
         "Nous croyons en une technologie accessible, respectuese de la vie privee et au service du bien commun.")

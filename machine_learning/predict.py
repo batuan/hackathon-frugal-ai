@@ -9,7 +9,7 @@ with open('./machine_learning/models/vectorizer.pkl', 'rb') as f:
 
 def predict(text):
     test_preprocessed = preprocess_text(text)
-    vec_test = vectorizer.transform([text])
+    vec_test = vectorizer.transform([test_preprocessed])
 
     proba = model.predict_proba(vec_test)
     predicted = model.predict(vec_test)

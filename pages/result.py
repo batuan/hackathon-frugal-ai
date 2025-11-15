@@ -6,7 +6,7 @@ with open('results/result.json') as json_data:
     fake_outputs = json.load(json_data)
 
 st.text("Niveau de suspicion")
-st.title(f"{fake_outputs['score']}")
+st.title(f"{fake_outputs['score'] * 100} %")
 
 
 st.progress(fake_outputs['score'], text=None)
