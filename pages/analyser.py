@@ -2,7 +2,7 @@ import streamlit as st
 from utlis.utlis import fake_inputs
 from streamlit_extras.switch_page_button import switch_page
 import json
-import random
+from machine_learning.predict import predict
 st.markdown("<h1 style='text-align: center; color: #483d8b;'>Karnak</h1>", unsafe_allow_html=True)
 text = '''
 
@@ -21,7 +21,8 @@ for uploaded_file in uploaded_files:
 
 if st.button("Analyser"):
     st.text("detecter encours")
-    score, message = round(random.random(), 3), "This message is likely to be spam, do not open it"
+    predicted, score = predict(str(input_text))
+
     with open('results/result.json', 'w') as file:
         data = {
             "score": score,
