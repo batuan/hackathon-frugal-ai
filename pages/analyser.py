@@ -2,6 +2,7 @@ import streamlit as st
 from utlis.utlis import fake_inputs
 from streamlit_extras.switch_page_button import switch_page
 import json
+import random
 st.markdown("<h1 style='text-align: center; color: #483d8b;'>Karnak</h1>", unsafe_allow_html=True)
 text = '''
 
@@ -20,11 +21,11 @@ for uploaded_file in uploaded_files:
 
 if st.button("Analyser"):
     st.text("detecter encours")
-    score, message = 0.11, "This message is likely to be spam, do not open it"
+    score, message = round(random.random(), 3), "This message is likely to be spam, do not open it"
     with open('results/result.json', 'w') as file:
         data = {
             "score": score,
-            "message": message,
+            "message": input_text,
         }
         json.dump(data, file)
     switch_page('result')
