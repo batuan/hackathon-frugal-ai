@@ -53,6 +53,8 @@ with center_container:
 
             result = scam_classifier.classify(detect_text)
             explain = scam_classifier.explain(result)
+            from utlis.regex_text import check_all_patterns
+            message_for_user = check_all_patterns(detect_text)
 
             with open('results/result.json', 'w') as file:
                 data = {
@@ -60,6 +62,7 @@ with center_container:
                     "message": input_text,
                     "result": result,
                     "explain": explain,
+                    "message_for_user": message_for_user
                 }
                 json.dump(data, file)
             switch_page('result')
