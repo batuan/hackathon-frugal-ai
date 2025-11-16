@@ -12,7 +12,7 @@ st.markdown(f"### {outputs['score'] * 100} %")
 st.progress(outputs['score'], text=None)
 
 
-st.markdown("#### Recommandation message:")
+st.markdown("#### Recommandation :")
 st.markdown(f"{outputs['message_for_user']}")
 
 center_container = st.container()
