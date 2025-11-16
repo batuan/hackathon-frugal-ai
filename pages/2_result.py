@@ -8,7 +8,7 @@ with open('results/result.json') as json_data:
     outputs = json.load(json_data)
 
 st.markdown("## Niveau de suspicion")
-st.markdown(f"### {outputs['score'] * 100} %")
+st.markdown(f"### {round(float(outputs['score']), 4) * 100} %")
 st.progress(outputs['score'], text=None)
 
 

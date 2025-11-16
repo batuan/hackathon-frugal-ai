@@ -62,7 +62,7 @@ with center_container:
 
             with open('results/result.json', 'w') as file:
                 data = {
-                    "score": score,
+                    "score": 1 - score,
                     "message": detect_text,
                     "result": result,
                     "explain": explain,
