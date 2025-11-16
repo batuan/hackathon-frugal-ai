@@ -24,7 +24,7 @@ json_message = {
 }
 
 patterns_ortho = [
-    re.compile(r'[a-z][!?:;]'),
+    re.compile(r'[a-z][!?:;] '),
     # re.compile(r'^[a-z]'),
     re.compile(r'\w[!?:;]{2,}'),
     re.compile(r'\b[A-Z][a-z]+[A-Z]\w+\b'),
@@ -101,14 +101,14 @@ def check_all_patterns(text):
         return json_message['paiement_inattendu']['long']
     if check_pattern(patterns_colis, text):
         return json_message['colis']['long']
-    elif check_pattern(patterns_ortho, text):
-        return json_message['faute_orthographe']['long']
-    elif check_pattern(patterns_info, text):
+    if check_pattern(patterns_info, text):
         return json_message['demande_infos']['long']
-    elif check_pattern(patterns_gift, text):
+    if check_pattern(patterns_gift, text):
         return json_message['email_suspect']['long']
+    if check_pattern(patterns_ortho, text):
+        return json_message['faute_orthographe']['long']
     return None
 
 if __name__ == "__main__":
-    text = 'test'
+    text =   "OrangeF 15:13 XOX al sl QD\n\u20ac 07 54 86 39 35 SS:\n\ns+) Enregistrer 07 54 86 39 35 ? x\n\nSi vous enregistrez ce num\u00e9ro, un\ncontact sera cr\u00e9\u00e9.\n\nSignaler comme spam Ajouter le contact\n\nEchange de SMS/MMS avec 07 54 86 39 35\n\nNon lus\n\n[Credit Mutuel] - QS\nGI Un d\u00e9bit de 1 446,28\n\nEUR est actuellement en cours\nsur votre espace, si vous n\u2019etes\npas a l\u2019origine de cette\nop\u00e9ration, veuillez\nimm\u00e9diatement contacter le\nservice d\u2019opposition au\n0189621294\n\n15:10 \u00ab Orange F\n\nOk merci Ok Ok merci beaucoup Parfai\n@\u00ae Message \u00a9 & th\n\nI O <\n"
     print(check_all_patterns(text))

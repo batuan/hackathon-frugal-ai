@@ -35,7 +35,16 @@ with center_container:
             unsafe_allow_html=True
         )
         if st.button("Nouvelle analyse"):
-            switch_page("analyser")
+            switch_page("detecter")
 
-st.markdown("<br><br><br><br><br><br><br><br><br><br><br>", unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
+center_container = st.container()
+with center_container:
+    col1, col2, col3 = st.columns([1, 1, 1])
+    with col2:
+        if st.button("En savoir plus"):
+            switch_page("document")
+
+
+st.markdown("<br><br><br><br><br><br><br>", unsafe_allow_html=True)
 bottom_text()
