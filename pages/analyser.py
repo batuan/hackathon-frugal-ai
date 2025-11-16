@@ -3,6 +3,10 @@ from utlis.utlis import fake_inputs
 from streamlit_extras.switch_page_button import switch_page
 import json
 from machine_learning.predict import predict
+from utlis.scam_classifier import ScamClassifier
+
+
+scam_classifier = ScamClassifier()
 st.markdown("<h1 style='text-align: center; color: #483d8b;'>Karnak</h1>", unsafe_allow_html=True)
 text = '''
 
@@ -19,19 +23,47 @@ uploaded_files = st.file_uploader(
 for uploaded_file in uploaded_files:
     text = fake_inputs
 
-if st.button("Analyser"):
-    st.text("detecter encours")
-    predicted, score = predict(str(input_text))
-    score = round(score, 4)
-    with open('results/result.json', 'w') as file:
-        data = {
-            "score": score,
-            "message": input_text,
-        }
-        json.dump(data, file)
-    switch_page('result')
+center_container = st.container()
+with center_container:
+    col1, col2, col3 = st.columns([1, 1, 1])
+    with col2:
+        st.markdown(
+            """<style>
+            .stButton>button {
+                width: 300px;
+                height: 40px;
+                font-size: 22px;
+                color: white;
+                background-color: #4CAF50;   /* green */
+                padding: 18px 40px;          /* bigger button */
+                border-radius: 12px;         /* rounded corners */
+                border: none;
+            }
+            </style>""",
+            unsafe_allow_html=True
+        )
 
 
-st.text("Notre IA Analyse le contenu pour détecter les signes d'arnaques courantes")
-st.text("Karnak est un project frugal et ethique creer pour proteger tous les utilisaterus contre les arnaques en ligne. "
-        "Nous croyons en une technologie accessible, respectuese de la vie privee et au service du bien commun.")
+        if st.button("Analyser"):
+            st.text("detecter encours")
+            detect_text = str(input_text)
+
+            predicted, score = predict(detect_text)
+            score = round(score, 4)
+
+            result = scam_classifier.classify(detect_text)
+            explain = scam_classifier.explain(result)
+
+            with open('results/result.json', 'w') as file:
+                data = {
+                    "score": score,
+                    "message": input_text,
+                    "result": result,
+                    "explain": explain,
+                }
+                json.dump(data, file)
+            switch_page('result')
+
+
+from utlis.footer import bottom_text
+bottom_text()
