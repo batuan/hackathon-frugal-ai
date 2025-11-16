@@ -14,4 +14,5 @@ dependencies = [
     "stopwords>=1.0.2",
     "streamlit==1.43.0",
     "streamlit-extras>=0.7.8",
+    "tesseract>=0.1.3",
 ]
