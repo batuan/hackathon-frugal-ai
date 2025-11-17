@@ -8,7 +8,7 @@
 [![Streamlit](https://img.shields.io/badge/streamlit-1.43.0-FF4B4B.svg)](https://streamlit.io)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-[Fonctionnalités](#-fonctionnalités) • [Installation](#-installation) • [Utilisation](#-utilisation) • [Technologies](#-technologies) • [Architecture](#-architecture)
+[Fonctionnalités](#-fonctionnalités) • [Installation](#-installation) • [Utilisation](#-utilisation) • [Déploiement](#-déploiement) • [Technologies](#-technologies)
 
 </div>
 
@@ -20,6 +20,7 @@
 - [Fonctionnalités](#-fonctionnalités)
 - [Installation](#-installation)
 - [Utilisation](#-utilisation)
+- [Déploiement](#-déploiement)
 - [Technologies](#-technologies)
 - [Architecture](#-architecture)
 - [Comment ça Marche](#-comment-ça-marche)
@@ -200,6 +201,152 @@ L'application sera accessible à l'adresse : **http://localhost:8501**
    - Exemples d'arnaques réelles
    - Conseils de prévention
    - Images et captures d'écran
+
+---
+
+## 🚀 Déploiement
+
+### Déploiement sur Streamlit Cloud
+
+Le projet est prêt pour un déploiement sur [Streamlit Cloud](https://streamlit.io/cloud). Tous les fichiers de configuration sont inclus.
+
+#### Fichiers de Configuration
+
+Le projet inclut les fichiers suivants pour le déploiement :
+
+- **`packages.txt`** : Installe Tesseract OCR et les paquets système nécessaires
+- **`requirements.txt`** : Liste toutes les dépendances Python
+- **`.streamlit/config.toml`** : Configuration de l'application Streamlit
+
+#### Étapes de Déploiement
+
+1. **Fork ou Push** votre code sur GitHub
+
+2. **Aller sur [Streamlit Cloud](https://share.streamlit.io/)**
+
+3. **Cliquer sur "New app"**
+
+4. **Configurer** :
+   - **Repository** : `votre-username/hackathon-frugal-ai`
+   - **Branch** : `main` (ou votre branche)
+   - **Main file path** : `main.py`
+
+5. **Cliquer sur "Deploy"**
+
+L'application sera déployée automatiquement avec Tesseract OCR installé.
+
+#### Résolution des Problèmes de Déploiement
+
+**Problème : pytesseract ne fonctionne pas**
+
+✅ **Solution** : Le fichier `packages.txt` installe automatiquement Tesseract. Vérifiez qu'il contient :
+```
+tesseract-ocr
+tesseract-ocr-fra
+libtesseract-dev
+```
+
+**Problème : L'upload d'image ne fonctionne pas**
+
+✅ **Solution** : L'application inclut un système de fallback. Si l'OCR échoue, un message guide l'utilisateur pour coller le texte manuellement.
+
+**Problème : Limite de taille d'upload**
+
+✅ **Solution** : Configuré dans `.streamlit/config.toml` avec `maxUploadSize = 10` (10 MB)
+
+### Déploiement sur d'Autres Plateformes
+
+#### Docker
+
+Créez un `Dockerfile` :
+
+```dockerfile
+FROM python:3.12-slim
+
+# Installer Tesseract
+RUN apt-get update && apt-get install -y \
+    tesseract-ocr \
+    tesseract-ocr-fra \
+    libtesseract-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
+
+EXPOSE 8501
+
+CMD ["streamlit", "run", "main.py", "--server.port=8501", "--server.address=0.0.0.0"]
+```
+
+Puis :
+```bash
+docker build -t karnak-app .
+docker run -p 8501:8501 karnak-app
+```
+
+#### Heroku
+
+1. Créer un fichier `Procfile` :
+```
+web: streamlit run main.py --server.port=$PORT --server.address=0.0.0.0
+```
+
+2. Créer `Aptfile` :
+```
+tesseract-ocr
+tesseract-ocr-fra
+libtesseract-dev
+```
+
+3. Déployer :
+```bash
+heroku create votre-app-name
+git push heroku main
+```
+
+#### VPS / Serveur Dédié
+
+1. **Installer Tesseract** :
+```bash
+sudo apt-get update
+sudo apt-get install tesseract-ocr tesseract-ocr-fra libtesseract-dev
+```
+
+2. **Cloner et installer** :
+```bash
+git clone https://github.com/batuan/hackathon-frugal-ai.git
+cd hackathon-frugal-ai
+uv sync
+source .venv/bin/activate
+```
+
+3. **Lancer avec Systemd** :
+
+Créer `/etc/systemd/system/karnak.service` :
+```ini
+[Unit]
+Description=Karnak Scam Detection
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/path/to/hackathon-frugal-ai
+ExecStart=/path/to/.venv/bin/streamlit run main.py --server.port=8501
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Puis :
+```bash
+sudo systemctl enable karnak
+sudo systemctl start karnak
+```
 
 ---
 

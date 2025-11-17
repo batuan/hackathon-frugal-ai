@@ -162,15 +162,33 @@ if img_file_buffer is not None:
         st.image(image, caption="Image uploadée", use_container_width=True)
 
     # Extraction du texte avec OCR
-    with st.spinner("🔄 Extraction du texte de l'image..."):
-        image_text = pytesseract.image_to_string(image)
+    try:
+        with st.spinner("🔄 Extraction du texte de l'image..."):
+            # Configurer pytesseract pour différents environnements
+            try:
+                # Essayer la configuration par défaut
+                image_text = pytesseract.image_to_string(image, lang='fra')
+            except:
+                # Fallback sans spécifier la langue
+                image_text = pytesseract.image_to_string(image)
 
-    if image_text.strip():
-        st.success(f"✅ Texte extrait ({len(image_text)} caractères)")
-        with st.expander("👁️ Voir le texte extrait"):
-            st.text(image_text)
-    else:
-        st.warning("⚠️ Aucun texte détecté dans l'image")
+        if image_text.strip():
+            st.success(f"✅ Texte extrait ({len(image_text)} caractères)")
+            with st.expander("👁️ Voir le texte extrait"):
+                st.text(image_text)
+        else:
+            st.warning("⚠️ Aucun texte détecté dans l'image")
+
+    except Exception as e:
+        st.error(f"""
+        ❌ Erreur lors de l'extraction du texte : {str(e)}
+
+        **Solutions possibles :**
+        - Si vous déployez sur Streamlit Cloud, assurez-vous d'avoir un fichier `packages.txt` avec tesseract-ocr
+        - Pour un déploiement local, installez Tesseract OCR sur votre système
+        - Vous pouvez toujours coller le texte manuellement dans la zone de texte ci-dessus
+        """)
+        st.info("💡 **Astuce** : Copiez le texte de votre image et collez-le dans la zone de texte ci-dessus pour continuer l'analyse.")
 
 st.markdown("</div>", unsafe_allow_html=True)
 
